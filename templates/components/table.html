@@ -1,0 +1,56 @@
+{% if tabla is not none %}
+<div class="mt-6 overflow-x-auto">
+  <table class="min-w-full bg-white border border-gray-200">
+    <thead>
+      <tr>
+        {% for col in tabla.columns %}
+        <th class="py-2 px-4 border-b bg-gray-100">{{ col }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in tabla.values.tolist() %}
+      <tr>
+        {% for item in row %}
+        <td class="py-1 px-2 border-b text-center">{{ item }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="flex gap-4 mt-4">
+  <form method="POST" action="/descargar/excel">
+    <input type="hidden" name="valor" value="{{ request.form['valor'] }}" />
+    <input
+      type="hidden"
+      name="porcentaje"
+      value="{{ request.form['porcentaje'] }}"
+    />
+    <input type="hidden" name="tasa" value="{{ request.form['tasa'] }}" />
+    <input type="hidden" name="plazo" value="{{ request.form['plazo'] }}" />
+    <button
+      type="submit"
+      class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
+    >
+      Descargar Excel
+    </button>
+  </form>
+  <form method="POST" action="/descargar/pdf">
+    <input type="hidden" name="valor" value="{{ request.form['valor'] }}" />
+    <input
+      type="hidden"
+      name="porcentaje"
+      value="{{ request.form['porcentaje'] }}"
+    />
+    <input type="hidden" name="tasa" value="{{ request.form['tasa'] }}" />
+    <input type="hidden" name="plazo" value="{{ request.form['plazo'] }}" />
+    <button
+      type="submit"
+      class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700"
+    >
+      Descargar PDF
+    </button>
+  </form>
+</div>
+{% endif %}

@@ -4,15 +4,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Amortización de Propiedad</title>
+    <title>Calculadora Amortización Hipotecario</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
 
   <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
-      {% include './components/table.html' %}
-      {% include './components/form.html' %}
-    </div>
+    <main class="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
+      <div id="table-component" {% if tabla is none %}style="display: none;" {% endif %}>
+        {% include './components/table.html' %}
+      </div>
+      <div id="form-component" {% if tabla is not none %}style="display: none;" {% endif %}>
+        {% include './components/form.html' %}
+      </div>
+      <footer id="footer" class="mt-8 text-center text-gray-600">
+        <p>© 2025 All right reserved. by <a href="http://github.com/zelys" target="_blank" rel="noopener noreferrer" class="hover:text-blue-700">Zelys</a>.</p>
+      </footer>
+    </main>
   </body>
 </html>
 

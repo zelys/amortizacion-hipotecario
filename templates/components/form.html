@@ -1,6 +1,15 @@
-<h1 class="text-2xl font-bold mb-6 text-center">
-  Calculadora de Amortización de Propiedad
+<h1 class="text-2xl font-bold mb-6 text-center color-gray-800">
+  Calculadora de Amortización de <br>Crédito Hipotecario
 </h1>
+
+{% if valor_uf %}
+<div class="mb-4 p-3 bg-blue-100 text-blue-800 rounded-lg">
+  <p class="text-center font-semibold">
+    Valor UF al día {{ fecha_actual }}: ${{ '{:,.2f}'.format(valor_uf).replace(',', '.') }} CLP
+  </p>
+</div>
+{% endif %}
+
 <form method="POST" class="grid grid-cols-1 gap-4">
   <input
     type="number"
@@ -26,16 +35,38 @@
     required
     class="p-2 border rounded"
   />
-  <input
-    type="number"
-    name="plazo"
-    placeholder="Plazo (años)"
-    required
-    class="p-2 border rounded"
-  />
+  <div class="flex flex-col space-y-1">
+    <label for="plazo" class="text-sm text-gray-600">Plazo (años):</label>
+    <select
+      id="plazo"
+      name="plazo"
+      required
+      class="p-2 border rounded bg-white"
+    >
+      <option value="" disabled selected>Seleccione un plazo</option>
+      {% for año in range(1, 41) %}
+        <option value="{{ año }}">{{ año }} {% if año == 1 %}año{% else %}años{% endif %}</option>
+      {% endfor %}
+    </select>
+  </div>
+  
+  <div class="flex flex-col space-y-2">
+    <label class="font-semibold">Seleccione moneda:</label>
+    <div class="flex space-x-4">
+      <label class="inline-flex items-center">
+        <input type="radio" name="tipo_moneda" value="uf" checked class="mr-2">
+        <span>UF</span>
+      </label>
+      <label class="inline-flex items-center">
+        <input type="radio" name="tipo_moneda" value="clp" class="mr-2">
+        <span>Pesos Chilenos</span>
+      </label>
+    </div>
+  </div>
+  
   <button
     type="submit"
-    class="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+    class="bg-[#37758c] text-white py-2 rounded hover:bg-[#42575b] transition duration-200 cursor-pointer"
   >
     Calcular
   </button>

@@ -1,22 +1,27 @@
 {% if tabla is not none %}
 <div>
-  <h2 class="text-xl font-semibold mb-4 text-center">Tabla de Amortización</h2>
-  <div class="bg-blue-950 p-4 rounded-lg mb-4 content-center">
-    <p class="text-center text-gray-600 text-white">
+  <h2 class="text-xl font-semibold mb-4 text-center">
+    Tabla de Amortización {% if request.form['tipo_moneda'] == 'clp' %}en Pesos Chilenos{% else %}en UF{% endif %}
+  </h2>
+  <div class="bg-gray-500 p-4 rounded-lg mb-4 content-center">
+    <p class="text-center text-white">
       {{ request.form['valor'] }} UF a un plazo de {{ request.form['plazo'] }} años
       ({{ request.form['plazo']|int * 12 }} meses) con un porcentaje de financiamiento del
       {{ request.form['porcentaje'] }}% (
       {{ request.form['valor']|float * (request.form['porcentaje']|float / 100) }} UF),
       con una tasa de interés del {{ request.form['tasa'] }}% anual.
+      {% if request.form['tipo_moneda'] == 'clp' %}
+        <br>Valores convertidos a Pesos Chilenos (Valor UF al día {{ fecha_actual }}: ${{ '{:,.2f}'.format(valor_uf).replace(',', '.') }} CLP)
+      {% endif %}
     </p>
   </div>
   
   <div class="overscroll-x-contain overscroll-y-contain overflow-x-auto max-h-100 rounded-lg bg-white border border-gray-200">
     <table class="w-full table-auto border-collapse text-sm">
-      <thead >
+      <thead>
         <tr>
           {% for col in tabla.columns %}
-          <th class="py-2 px-4 border-b bg-gray-100">{{ col }}</th>
+          <th class="py-4 px-2 border-b-4 bg-gray-50 border-gray-100 text-left">{{ col }}</th>
           {% endfor %}
         </tr>
       </thead>
@@ -24,11 +29,18 @@
         {% for row in tabla.values.tolist() %}
         <tr>
           {% for item in row %}
-          {% if item is string %}
-          <td class="py-1 px-2 border-b text-center">{{ item }}</td>
-          {% else %}
-          <td class="py-1 px-2 border-b text-center">{{ item | round(2) }}</td>
-          {% endif %} 
+            {% if loop.first %}
+              {# Primera columna es el número de mes #}
+              <td class="py-1 px-2 border-b border-gray-100">{{ item }}</td>
+            {% elif item is string %}
+              <td class="py-1 px-2 border-b border-gray-100">{{ item }}</td>
+            {% else %}
+              {% if request.form['tipo_moneda'] == 'clp' and not loop.first %}
+                <td class="py-1 px-2 border-b border-gray-100">$ {{ '{:,.2f}'.format(item|float).replace(',', '.') }}</td>
+              {% else %}
+                <td class="py-1 px-2 border-b border-gray-100">{{ item | round(2) }}</td>
+              {% endif %}
+            {% endif %} 
           {% endfor %}
         </tr>
         {% endfor %}
@@ -46,9 +58,10 @@
     />
     <input type="hidden" name="tasa" value="{{ request.form['tasa'] }}" />
     <input type="hidden" name="plazo" value="{{ request.form['plazo'] }}" />
+    <input type="hidden" name="tipo_moneda" value="{{ request.form['tipo_moneda'] }}" />
     <button
       type="submit"
-      class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
+      class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 cursor-pointer transition duration-200"
     >
       Descargar Excel
     </button>
@@ -62,12 +75,16 @@
     />
     <input type="hidden" name="tasa" value="{{ request.form['tasa'] }}" />
     <input type="hidden" name="plazo" value="{{ request.form['plazo'] }}" />
+    <input type="hidden" name="tipo_moneda" value="{{ request.form['tipo_moneda'] }}" />
     <button
       type="submit"
-      class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700"
+      class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 cursor-pointer transition duration-200"
     >
       Descargar PDF
     </button>
   </form>
+  <a href="/nuevo-calculo" class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 inline-block cursor-pointer transition duration-200">
+    Nuevo Cálculo
+  </a>
 </div>
 {% endif %}

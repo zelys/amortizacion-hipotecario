@@ -1,23 +1,40 @@
 {% if tabla is not none %}
-<div class="mt-6 overflow-x-auto">
-  <table class="min-w-full bg-white border border-gray-200">
-    <thead>
-      <tr>
-        {% for col in tabla.columns %}
-        <th class="py-2 px-4 border-b bg-gray-100">{{ col }}</th>
+<div>
+  <h2 class="text-xl font-semibold mb-4 text-center">Tabla de Amortización</h2>
+  <div class="bg-blue-950 p-4 rounded-lg mb-4 content-center">
+    <p class="text-center text-gray-600 text-white">
+      {{ request.form['valor'] }} UF a un plazo de {{ request.form['plazo'] }} años
+      ({{ request.form['plazo']|int * 12 }} meses) con un porcentaje de financiamiento del
+      {{ request.form['porcentaje'] }}% (
+      {{ request.form['valor']|float * (request.form['porcentaje']|float / 100) }} UF),
+      con una tasa de interés del {{ request.form['tasa'] }}% anual.
+    </p>
+  </div>
+  
+  <div class="overscroll-x-contain overscroll-y-contain overflow-x-auto max-h-100 rounded-lg bg-white border border-gray-200">
+    <table class="w-full table-auto border-collapse text-sm">
+      <thead >
+        <tr>
+          {% for col in tabla.columns %}
+          <th class="py-2 px-4 border-b bg-gray-100">{{ col }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in tabla.values.tolist() %}
+        <tr>
+          {% for item in row %}
+          {% if item is string %}
+          <td class="py-1 px-2 border-b text-center">{{ item }}</td>
+          {% else %}
+          <td class="py-1 px-2 border-b text-center">{{ item | round(2) }}</td>
+          {% endif %} 
+          {% endfor %}
+        </tr>
         {% endfor %}
-      </tr>
-    </thead>
-    <tbody>
-      {% for row in tabla.values.tolist() %}
-      <tr>
-        {% for item in row %}
-        <td class="py-1 px-2 border-b text-center">{{ item }}</td>
-        {% endfor %}
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 </div>
 <div class="flex gap-4 mt-4">
   <form method="POST" action="/descargar/excel">

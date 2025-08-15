@@ -1,7 +1,6 @@
 import pandas as pd
-from fpdf import FPDF
-import io
-import requests
+from doc_pdf import PDF
+import io, os, requests, tempfile
 
 # Obtener el valor actual de la UF
 def obtener_valor_uf():
@@ -10,10 +9,14 @@ def obtener_valor_uf():
     data = respuesta.json()
     return data['serie'][0]['valor']
 
-
-
 # Calcular la tabla de amortización
-def tabla_amort_en_uf(valor_propiedad, porc_financ,tasa_anual, plazo_anos):
+def tabla_amort_en_uf(valor_propiedad, porc_financ,tasa_anual, plazo_anos, tipo_moneda = 'uf'):
+
+    global detalle_consulta, moneda
+
+    moneda = tipo_moneda.upper()
+    
+    detalle_consulta = detalles(valor_propiedad, porc_financ, tasa_anual, plazo_anos)
 
     prestamo_uf = valor_propiedad * (porc_financ / 100)
 
@@ -37,7 +40,14 @@ def tabla_amort_en_uf(valor_propiedad, porc_financ,tasa_anual, plazo_anos):
     return df
 
 # Calcular la tabla de amortización en CLP
-def tabla_amortizacion_en_clp(valor_propiedad, porc_financ, tasa_anual, plazo_anos):
+def tabla_amortizacion_en_clp(valor_propiedad, porc_financ, tasa_anual, plazo_anos, tipo_moneda='clp'):
+
+    global detalle_consulta, moneda
+    
+    moneda = tipo_moneda.upper()
+    
+    detalle_consulta = detalles(valor_propiedad, porc_financ, tasa_anual, plazo_anos)
+
     valor_uf = obtener_valor_uf()
     df_uf = tabla_amort_en_uf(valor_propiedad, porc_financ, tasa_anual, plazo_anos)
     df_clp = df_uf.copy()
@@ -46,6 +56,23 @@ def tabla_amortizacion_en_clp(valor_propiedad, porc_financ, tasa_anual, plazo_an
     df_clp["Amortización"] = df_clp["Amortización"] * valor_uf
     df_clp["Saldo"] = df_clp["Saldo"] * valor_uf
     return df_clp
+
+# Detalle de la consulta
+def detalles(valor_propiedad, porc_financ, tasa_anual, plazo_anos):
+    if moneda.lower == 'clp':
+        valor_uf = obtener_valor_uf()
+        valor_propiedad = valor_propiedad * valor_uf
+        prestamo = valor_propiedad * (porc_financ / 100)
+    else:
+        prestamo = valor_propiedad * (porc_financ / 100)
+    detalle = []
+    detalle.append(valor_propiedad)
+    detalle.append(porc_financ)
+    detalle.append(tasa_anual)
+    detalle.append(plazo_anos)
+    detalle.append(prestamo)
+
+    return detalle
 
 # Exportar tablas a diferentes formatos
 def exportar_excel(tabla):
@@ -64,22 +91,18 @@ def exportar_csv(tabla):
 
 # Exportar tabla a PDF
 def exportar_pdf(tabla):
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font('Arial', 'B', 12)
-    # Añadir título
-    pdf.cell(0, 10, 'Tabla de Amortización en UF', ln=True, align='C')
-    col_width = pdf.w / (len(tabla.columns) + 1)
-    row_height = pdf.font_size * 1.5
-    for col in tabla.columns:
-        pdf.cell(col_width, row_height, str(col), border=1, align='C')
-    pdf.ln(row_height)
-    pdf.set_font('Arial', '', 10)
-    for _, row in tabla.iterrows():
-        for item in row:
-            pdf.cell(col_width, row_height, str(item), border=1)
-        pdf.ln(row_height)
-    output = io.BytesIO(pdf.output(dest='S').encode('latin1'))
+    # Preparar datos para la tabla
+    data = [list(tabla.columns)] + tabla.values.tolist()
+    # Crear PDF 
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp:
+        pdf = PDF(tmp.name)
+        pdf.add_title(f'Detalle de amortización del crédito hipotecario en {moneda}')
+        pdf.add_paragraph(f"{detalle_consulta[0]:.0f} {moneda} a un plazo de {detalle_consulta[3]} años, con un financiamiento del {detalle_consulta[1]:.1f}% y una tasa anual del {detalle_consulta[2]:.2f}%")
+        pdf.add_table(data)
+        pdf.build()
+        tmp.seek(0)
+        output = io.BytesIO(tmp.read())
+    os.unlink(tmp.name)
     output.seek(0)
     return output                   
 

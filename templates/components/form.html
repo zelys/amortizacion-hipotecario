@@ -1,69 +1,48 @@
 <h1 class="text-2xl font-bold mb-6 text-center color-gray-800">
-  Calculadora de Amortización de <br>Crédito Hipotecario
+  Simulador de amortización del crédito hipotecario
 </h1>
 
 {% if valor_uf %}
-<div class="mb-4 p-3 bg-blue-100 text-blue-800 rounded-lg">
-  <p class="text-center font-semibold">
-    Valor UF al día {{ fecha_actual }}: ${{ '{:,.2f}'.format(valor_uf).replace(',', '.') }} CLP
-  </p>
-</div>
+<p class="text-green-800 font-bold text-center text-lg">
+  Valor UF hoy: $ {{'{:,.2f}'.format(valor_uf).replace(',', '.') }}
+</p>
+<p class="mb-4 text-gray-600 text-center italic font-light">
+  {{ fecha_actual }}
+</p>
 {% endif %}
 
 <form method="POST" class="grid grid-cols-1 gap-4">
-  <input
-    type="number"
-    step="0.01"
-    name="valor"
-    placeholder="Valor de la propiedad"
-    required
-    class="p-2 border rounded"
-  />
-  <input
-    type="number"
-    step="0.01"
-    name="porcentaje"
-    placeholder="% de financiamiento"
-    required
-    class="p-2 border rounded"
-  />
-  <input
-    type="number"
-    step="0.01"
-    name="tasa"
-    placeholder="Tasa anual (%)"
-    required
-    class="p-2 border rounded"
-  />
+  <input type="number" step="0.01" name="valor" placeholder="Ingrese el monto del crédito (en UF)" required min="100" max="20000" oninvalid="this.setCustomValidity('Ingrese un valor entre 100 y 20,000 UF')" oninput="this.setCustomValidity('')" class="p-2 border rounded border-gray-200"/>
+
+  <input type="number" step="0.01" name="porcentaje" placeholder="% de financiamiento" required min="10" max="100" oninvalid="this.setCustomValidity('Ingrese un porcentaje entre 10 y 100')" oninput="this.setCustomValidity('')" class="p-2 border rounded border-gray-200"/>
+
+  <input type="number" step="0.01" name="tasa" placeholder="Tasa de interes anual (%)" required min="0" max="20" class="p-2 border rounded border-gray-200"/>
+
   <div class="flex flex-col space-y-1">
-    <label for="plazo" class="text-sm text-gray-600">Plazo (años):</label>
-    <select
-      id="plazo"
-      name="plazo"
-      required
-      class="p-2 border rounded bg-white"
-    >
+    <select id="plazo" name="plazo" required class="p-2 border rounded border-gray-200">
       <option value="" disabled selected>Seleccione un plazo</option>
       {% for año in range(1, 41) %}
-        <option value="{{ año }}">{{ año }} {% if año == 1 %}año{% else %}años{% endif %}</option>
+      <option value="{{ año }}">
+        {{ año }} {% if año == 1 %}año{% else %}años{% endif %}
+      </option>
       {% endfor %}
     </select>
   </div>
-  
+
   <div class="flex flex-col space-y-2">
     <label class="font-semibold">Seleccione moneda:</label>
     <div class="flex space-x-4">
       <label class="inline-flex items-center">
-        <input type="radio" name="tipo_moneda" value="uf" checked class="mr-2">
+        <input type="radio" name="tipo_moneda" value="uf" checked class="mr-2"/>
         <span>UF</span>
       </label>
       <label class="inline-flex items-center">
-        <input type="radio" name="tipo_moneda" value="clp" class="mr-2">
+        <input type="radio" name="tipo_moneda" value="clp" class="mr-2" />
         <span>Pesos Chilenos</span>
       </label>
     </div>
   </div>
-  
+
   <button
     type="submit"
     class="bg-[#37758c] text-white py-2 rounded hover:bg-[#42575b] transition duration-200 cursor-pointer"

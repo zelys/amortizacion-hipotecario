@@ -1,13 +1,16 @@
 from flask import Flask, render_template, request, send_file, redirect, url_for
 from utils import tabla_amort_en_uf, tabla_amortizacion_en_clp, exportar_excel, exportar_pdf, formatear_dataframe, obtener_valor_uf
 from datetime import datetime
+import locale
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     tabla = None
     valor_uf = obtener_valor_uf()
-    fecha_actual = datetime.now().strftime('%d/%m/%Y')
+    locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+    fecha_actual = datetime.now().strftime('%A, %d de %B de %Y').capitalize()
+    year = datetime.now().year
     
     if request.method == 'POST':
         valor = float(request.form['valor'])
@@ -21,7 +24,7 @@ def index():
         else:
             tabla = tabla_amort_en_uf(valor, porcentaje, tasa, plazo)
             
-    return render_template('index.html', tabla=tabla, valor_uf=valor_uf, fecha_actual=fecha_actual)
+    return render_template('index.html', tabla=tabla, valor_uf=valor_uf, fecha_actual=fecha_actual, year=year)
 
 # Ruta para nuevo cálculo - redirecciona al inicio
 @app.route('/nuevo-calculo', methods=['GET'])
@@ -36,7 +39,6 @@ def descargar(formato):
     tasa = float(request.form['tasa'])
     plazo = int(request.form['plazo'])
     tipo_moneda = request.form.get('tipo_moneda', 'uf')
-    fecha_actual = datetime.now().strftime('%d/%m/%Y')
     
     if tipo_moneda == 'clp':
         tabla = tabla_amortizacion_en_clp(valor, porcentaje, tasa, plazo)
@@ -55,4 +57,4 @@ def descargar(formato):
         return 'Formato no soportado', 400
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

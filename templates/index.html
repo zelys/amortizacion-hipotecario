@@ -22,11 +22,26 @@
       </div>
       
       <footer id="footer" class="mt-8 text-center text-gray-600">
-        <p>© {{ year }} All right reserved. by <a href="http://github.com/zelys" target="_blank" rel="noopener noreferrer" class="hover:text-blue-700">Zelys</a>.</p>
+        <p>© <span id="anio"></span> All right reserved. by <a href="http://github.com/zelys" target="_blank" rel="noopener noreferrer" class="hover:text-blue-700">Zelys</a>.</p>
       </footer>
 
     </main>
   </body>
+  <script>
+    let fecha = new Date();
+    let opciones = {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    };
+
+    let fechaFormateada = fecha.toLocaleDateString('es-ES', opciones).trim();
+    fechaFormateada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+    let anio = fecha.getFullYear();
+    document.getElementById("anio").innerText = anio;
+    document.getElementById("fechaFormateada").innerText = fechaFormateada;
+  </script>
 </html>
 
 

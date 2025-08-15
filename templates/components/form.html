@@ -6,9 +6,7 @@
 <p class="text-green-800 font-bold text-center text-lg">
   Valor UF hoy: $ {{'{:,.2f}'.format(valor_uf).replace(',', '.') }}
 </p>
-<p class="mb-4 text-gray-600 text-center italic font-light">
-  {{ fecha_actual }}
-</p>
+<p id="fechaFormateada" class="mb-4 text-gray-600 text-center italic font-light"></p>
 {% endif %}
 
 <form method="POST" class="grid grid-cols-1 gap-4">

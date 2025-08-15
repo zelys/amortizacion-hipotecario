@@ -69,15 +69,6 @@ Sigue estos pasos para ejecutar el proyecto en tu propia máquina.
     npm run build-css
     ```
 
-    # En Windows
-
-    python -m venv .venv
-    .venv\Scripts\activate
-
-    ```
-
-    ```
-
 5.  **Instala las dependencias:**
 
     ```bash

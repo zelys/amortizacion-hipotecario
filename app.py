@@ -1,14 +1,13 @@
 from flask import Flask, render_template, request, send_file, redirect, url_for
 from utils import tabla_amort_en_uf, tabla_amortizacion_en_clp, exportar_excel, exportar_pdf, formatear_dataframe, obtener_valor_uf
 from datetime import datetime
-import locale
+
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     tabla = None
     valor_uf = obtener_valor_uf()
-    locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
     fecha_actual = datetime.now().strftime('%A, %d de %B de %Y').capitalize()
     year = datetime.now().year
     

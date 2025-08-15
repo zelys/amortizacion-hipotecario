@@ -59,7 +59,7 @@ def tabla_amortizacion_en_clp(valor_propiedad, porc_financ, tasa_anual, plazo_an
 
 # Detalle de la consulta
 def detalles(valor_propiedad, porc_financ, tasa_anual, plazo_anos):
-    if moneda.lower == 'clp':
+    if moneda.lower() == 'clp':
         valor_uf = obtener_valor_uf()
         valor_propiedad = valor_propiedad * valor_uf
         prestamo = valor_propiedad * (porc_financ / 100)

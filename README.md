@@ -37,7 +37,7 @@ Sigue estos pasos para ejecutar el proyecto en tu propia máquina.
 1.  **Clona el repositorio:**
 
     ```bash
-    git clone https://github.com/tu-usuario/amortizacion-hipotecario.git
+    git clone https://github.com/zelys/amortizacion-hipotecario.git
     cd amortizacion-hipotecario
     ```
 
@@ -50,16 +50,41 @@ Sigue estos pasos para ejecutar el proyecto en tu propia máquina.
 
     # En Windows
     python -m venv .venv
-    .venv\Scripts\activate
+    .\.venv\Scripts\activate
     ```
 
-3.  **Instala las dependencias:**
+3.  **Instala las dependencias de Python:**
 
     ```bash
     pip install -r requirements.txt
     ```
 
-4.  **Ejecuta la aplicación Flask:**
+4.  **Instala y compila Tailwind CSS:**
+
+    ```bash
+    # Instala las dependencias de Node.js
+    npm install
+
+    # Compila el CSS para producción
+    npm run build-css
+    ```
+
+    # En Windows
+
+    python -m venv .venv
+    .venv\Scripts\activate
+
+    ```
+
+    ```
+
+5.  **Instala las dependencias:**
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+6.  **Ejecuta la aplicación Flask:**
     ```bash
     flask --app app run --debug
     ```

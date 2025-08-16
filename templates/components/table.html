@@ -3,23 +3,28 @@
   Amortización de Crédito Hipotecario {% if request.form['tipo_moneda'] == 'clp' %}en Pesos{% else %}en UF{% endif %}
 </h2>
 <div>
-  <p class="bg-gray-50 rounded-lg p-4 content-center border border-gray-200 text-sm">
-    {{ request.form['valor'] }} UF (equivale a $ {{request.form['valor']|float * valor_uf}}) a un plazo de {{ request.form['plazo'] }} años
-    ({{ request.form['plazo']|int * 12 }} meses) con un financiamiento del {{ request.form['porcentaje'] }}% ({{ request.form['valor']|float * (request.form['porcentaje']|float / 100) }} UF) y una tasa anual del {{ request.form['tasa'] }}%.
+  <p class="bg-gray-50 rounded-lg p-4 content-center border border-gray-200 span-italic">
+    {{ request.form['valor'] }} UF ( <span>equivale a $ {{ '{:,.0f}'.format(request.form['valor']|float * valor_uf).replace(',', '.') }}</span> ) a {{ request.form['plazo'] }} años plaso,
+    ( <span>{{ request.form['plazo']|int * 12 }} meses</span> ) 
+    con un financiamiento del {{ request.form['porcentaje'] }}% 
+    ( <span>{{ request.form['valor']|float * (request.form['porcentaje']|float / 100) }} UF</span> ) 
+    y una tasa anual del {{ request.form['tasa'] }}%.
   </p>
-  <ul class="list-disc list-inside text-sm my-4">
-    <li>Valor UF al día {{ fecha_actual }}: ${{'{:,.2f}'.format(valor_uf).replace(',', '.') }} CLP.</li>
+  <ul class="list-disc list-inside my-4">
+    <li>Valor UF hoy: <span id="fechaHoy" class="text-gray-500 italic">:</span>
+      <span class="text-green-800 font-semibold"> $ {{'{:,.2f}'.format(valor_uf).replace(',', '.') }}</span>
+    </li>
     {% if request.form['tipo_moneda'] == 'clp' %}
     <li>Valores convertidos a pesos Chilenos.</li>
     {% endif %}
   </ul>
 </div>
-<div class="overscroll-x-contain overscroll-y-contain overflow-x-auto max-h-100 rounded-lg bg-white border border-gray-200">
-  <table class="w-full table-auto border-collapse text-sm">
-    <thead>
+<div class="max-h-100 rounded-lg bg-white border border-gray-200 overflow-auto sm:overscroll-contain overscroll-auto inset-shadow-sm">
+  <table class="w-full table-auto text-left">
+    <thead class="sticky top-0 bg-[#006363] border-b-4 border-gray-200">
       <tr>
         {% for col in tabla.columns %}
-        <th class="py-4 px-2 border-b-4 bg-gray-50 border-gray-100 text-left">{{ col }}</th>
+        <th class="pt-6 pb-2 pl-2 text-base font-normal text-white">{{ col }}</th>
         {% endfor %}
       </tr>
     </thead>
@@ -27,25 +32,23 @@
       {% for row in tabla.values.tolist() %}
       <tr>
         {% for item in row %}
-          {% if loop.first %}
-            {# Primera columna es el número de mes #}
-            <td class="py-1 px-2 border-b border-gray-100">{{ item }}</td>
-          {% elif item is string %}
-            <td class="py-1 px-2 border-b border-gray-100">{{ item }}</td>
-          {% else %}
-            {% if request.form['tipo_moneda'] == 'clp' and not loop.first %}
-              <td class="py-1 px-2 border-b border-gray-100">$ {{ '{:,.2f}'.format(item|float).replace(',', '.') }}</td>
-            {% else %}
-              <td class="py-1 px-2 border-b border-gray-100">{{ item | round(2) }}</td>
-            {% endif %}
-          {% endif %} 
+        {% if loop.first %}
+        {# Primera columna mes #}
+          <td>{{ item }}</td>
+        {% else %}
+        {% if request.form['tipo_moneda'] == 'clp' and not loop.first %}
+          <td>{{ '$ {:,.2f}'.format(item|float).replace(',', '.') }}</td>
+        {% else %}
+          <td>{{ '{:,.2f}'.format(item|float).replace(',', '.') }}</td>
+        {% endif %}
+        {% endif %} 
         {% endfor %}
       </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
-<div class="flex mt-4 grid-cols-3 gap-4 justify-center">
+<div class="flex mt-4 flex-col sm:flex-row gap-4 justify-center">
   <form method="POST" action="/descargar/excel">
     <input type="hidden" name="valor" value="{{ request.form['valor'] }}" />
     <input
@@ -58,7 +61,7 @@
     <input type="hidden" name="tipo_moneda" value="{{ request.form['tipo_moneda'] }}" />
 
     <button type="submit"
-      class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 cursor-pointer transition duration-200">
+      class=" w-full bg-[#009220] text-white py-2 px-4 rounded hover:bg-[#006D18] cursor-pointer transition duration-200">
       Descargar Excel
     </button>
 
@@ -75,14 +78,14 @@
     <input type="hidden" name="tipo_moneda" value="{{ request.form['tipo_moneda'] }}" />
 
     <button type="submit"
-      class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 cursor-pointer transition duration-200">
+      class="w-full bg-[#FF3A3A] text-white py-2 px-4 rounded hover:bg-[#900000] cursor-pointer transition duration-200">
       Descargar PDF
     </button>
 
   </form>
 
     <a href="/nuevo-calculo"
-      class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 inline-block cursor-pointer transition duration-200">
+      class="w-full sm:w-auto bg-[#00A9A9] text-white text-center py-2 px-4 rounded hover:bg-[#006363] cursor-pointer transition duration-200">
       Nuevo Cálculo
     </a>
 

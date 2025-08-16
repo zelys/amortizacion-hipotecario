@@ -7,6 +7,7 @@
     <title>Simulador de Amortización Hipotecaria</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="shortcut icon" href="/static/ico/house.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/styles.css" />
   </head>
 
   <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
@@ -22,7 +23,7 @@
       </div>
       
       <footer id="footer" class="mt-8 text-center text-gray-600">
-        <p>© <span id="anio"></span> All right reserved. by <a href="http://github.com/zelys" target="_blank" rel="noopener noreferrer" class="hover:text-blue-700">Zelys</a>.</p>
+        <p>© <span id="anio"></span> All right reserved. by <a href="http://github.com/zelys" target="_blank" rel="noopener noreferrer" class="hover:text-[#006363]">Zelys</a>.</p>
       </footer>
 
     </main>
@@ -41,6 +42,7 @@
     let anio = fecha.getFullYear();
     document.getElementById("anio").innerText = anio;
     document.getElementById("fechaFormateada").innerText = fechaFormateada;
+    document.getElementById("fechaHoy").innerText = fechaFormateada;
   </script>
 </html>
 

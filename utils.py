@@ -104,7 +104,7 @@ def exportar_pdf(tabla):
         output = io.BytesIO(tmp.read())
     os.unlink(tmp.name)
     output.seek(0)
-    return output                   
+    return output                  
 
 # Formatear datos a 2 decimales
 def formatear_dataframe(df):

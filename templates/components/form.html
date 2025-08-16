@@ -1,29 +1,52 @@
-<h1 class="text-2xl font-bold mb-6 text-center color-gray-800">
+<h1 class="text-2xl font-bold mb-6 text-center">
   Simulador de amortización del crédito hipotecario
 </h1>
 
 {% if valor_uf %}
-<p class="text-green-800 font-bold text-center text-lg">
+<h2 class="text-[#00A9A9] font-bold text-center text-xl">
   Valor UF hoy: $ {{'{:,.2f}'.format(valor_uf).replace(',', '.') }}
-</p>
-<p id="fechaFormateada" class="mb-4 text-gray-600 text-center italic font-light"></p>
+</h2>
+<p id="fechaFormateada" class="mb-4 text-center italic font-normal"></p>
 {% endif %}
 
 <form method="POST" class="grid grid-cols-1 gap-4">
-  <input type="number" step="0.01" name="valor" placeholder="Ingrese el monto del crédito (en UF)" required min="100" max="20000" oninvalid="this.setCustomValidity('Ingrese un valor entre 100 y 20,000 UF')" oninput="this.setCustomValidity('')" class="p-2 border rounded border-gray-200"/>
-
-  <input type="number" step="0.01" name="porcentaje" placeholder="% de financiamiento" required min="10" max="100" oninvalid="this.setCustomValidity('Ingrese un porcentaje entre 10 y 100')" oninput="this.setCustomValidity('')" class="p-2 border rounded border-gray-200"/>
-
-  <input type="number" step="0.01" name="tasa" placeholder="Tasa de interes anual (%)" required min="0" max="20" class="p-2 border rounded border-gray-200"/>
+  <input 
+  type="number" 
+  step="0.01" 
+  name="valor" 
+  placeholder="Ingrese el monto del crédito (en UF)" 
+  required min="100" max="20000" 
+  oninvalid="this.setCustomValidity('Ingrese un valor entre 100 y 20,000 UF')" 
+  oninput="this.setCustomValidity('')" 
+  />
+  <input 
+  type="number" 
+  step="0.01" 
+  name="porcentaje" 
+  placeholder="% de financiamiento" 
+  required min="10" max="100" 
+  oninvalid="this.setCustomValidity('Ingrese un porcentaje entre 10 y 100')" 
+  oninput="this.setCustomValidity('')"
+  />
+  <input 
+  type="number" 
+  step="0.01" 
+  name="tasa" 
+  placeholder="Tasa de interes anual (%)" 
+  required 
+  min="0" max="20" 
+  />
 
   <div class="flex flex-col space-y-1">
-    <select id="plazo" name="plazo" required class="p-2 border rounded border-gray-200">
-      <option value="" disabled selected>Seleccione un plazo</option>
-      {% for año in range(1, 41) %}
-      <option value="{{ año }}">
-        {{ año }} {% if año == 1 %}año{% else %}años{% endif %}
-      </option>
-      {% endfor %}
+    <select id="plazo"
+    name="plazo" 
+    required class="h-11">
+    <option disabled selected>Seleccione un plazo</option>
+    {% for año in range(1, 41) %}
+    <option value="{{ año }}">
+      {{ año }} {% if año == 1 %}año{% else %}años{% endif %}
+    </option>
+    {% endfor %}
     </select>
   </div>
 
@@ -43,8 +66,7 @@
 
   <button
     type="submit"
-    class="bg-[#37758c] text-white py-2 rounded hover:bg-[#42575b] transition duration-200 cursor-pointer"
-  >
+    class="bg-[#00A9A9] text-white py-2 rounded hover:bg-[#006363] transition duration-200 cursor-pointer">
     Calcular
   </button>
 </form>
